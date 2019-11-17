@@ -1,4 +1,11 @@
-# Moins
+# Moins [![Latest Version]][crates.io] [![Build Status]][travis]
+
+[Build Status]: https://travis-ci.org/oknozor/moins.svg?branch=master
+[travis]: https://travis-ci.org/oknozor/musicbrainz_rs
+[Latest Version]: https://img.shields.io/crates/v/moins.svg
+[crates.io]: https://www.crates.io/crates/moins
+
+
 🥖 *"moins"* is french for *"less"* 🥖 ! .
 
 ![](docs/moins.gif)
