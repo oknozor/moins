@@ -3,8 +3,11 @@ name = "moins"
 version = "0.1.0"
 authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A Keep It Simple Stupid pager crate"
+repository = "https://github.com/oknozor/moins"
+documentation = "https://docs.rs/moins"
+license = "MIT"
+readme = "crates-io.md"
 
 [dependencies]
 termion = "1.5.3"
