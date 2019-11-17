@@ -1,6 +1,6 @@
 [package]
 name = "moins"
-version = "0.1.0"
+version = "0.1.2"
 authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
 edition = "2018"
 description = "A Keep It Simple Stupid pager crate"
@@ -8,6 +8,9 @@ repository = "https://github.com/oknozor/moins"
 documentation = "https://docs.rs/moins"
 license = "MIT"
 readme = "crates-io.md"
+exclude = [
+    "screenshots/*",
+]
 
 [dependencies]
 termion = "1.5.3"

@@ -2,11 +2,11 @@
 
 [Build Status]: https://travis-ci.org/oknozor/moins.svg?branch=master
 [travis]: https://travis-ci.org/oknozor/musicbrainz_rs
+[Latest Version]: https://img.shields.io/crates/v/moins.svg
+[crates.io]: https://www.crates.io/crates/moins
 
 
 🥖 *"moins"* is french for *"less"* 🥖 ! .
-
-![](docs/moins.gif)
 
 ## What is moins ?
 
@@ -23,7 +23,7 @@ Add moins to your `Cargo.toml` dependencies.
 moins = "0.1.0"
 ```
 
-Moins expose a single `run` function and a `PagerOption` stuct to define your pager behavior.
+Moins expose a single `run` function and a `PagerOption` struct to define your pager behavior.
 
 Here is the simplest pager you can run :
 

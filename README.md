@@ -8,7 +8,7 @@
 
 🥖 *"moins"* is french for *"less"* 🥖 ! .
 
-![](docs/moins.gif)
+![](screenshots/moins.gif)
 
 ## What is moins ?
 
@@ -25,7 +25,7 @@ Add moins to your `Cargo.toml` dependencies.
 moins = "0.1.0"
 ```
 
-Moins expose a single `run` function and a `PagerOption` stuct to define your pager behavior.
+Moins expose a single `run` function and a `PagerOption` struct to define your pager behavior.
 
 Here is the simplest pager you can run :
 
