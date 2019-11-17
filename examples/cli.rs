@@ -1,5 +1,5 @@
-extern crate termion;
 extern crate moins;
+extern crate termion;
 
 use io::Result;
 use std::env;
@@ -28,7 +28,7 @@ fn main() -> Result<()> {
 
     file.read_to_string(&mut content)?;
 
-    Pager::run(content);
+    Pager::run(&mut content, None);
 
     Ok(())
 }
