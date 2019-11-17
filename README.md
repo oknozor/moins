@@ -1,6 +1,8 @@
 # Moins
 🥖 *"moins"* is french for *"less"* 🥖 ! .
 
+![](docs/moins.gif)
+
 ## What is moins ?
 
 Moins is a Keep It Simple Stupid less like pager that you can use as a crate.
