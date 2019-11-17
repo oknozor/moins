@@ -23,7 +23,7 @@ fn main() -> Result<()> {
     let mut file = if let Some(path) = path {
         File::open(path)?
     } else {
-        panic!("expected an input")
+        panic!("expected an input file")
     };
 
     file.read_to_string(&mut content)?;

@@ -1,5 +1,4 @@
 extern crate moins;
-extern crate termion;
 
 use moins::Color;
 use moins::Pager;
