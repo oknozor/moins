@@ -1,11 +1,19 @@
 use std::cell::RefCell;
 use std::io::Write;
-use std::io::{stdin, stdout, Stdout};
+use std::io::{
+    stdin,
+    stdout,
+    Stdout,
+};
 use termion::event::Key;
-use termion::input::MouseTerminal;
-use termion::input::TermRead;
-use termion::raw::IntoRawMode;
-use termion::raw::RawTerminal;
+use termion::input::{
+    MouseTerminal,
+    TermRead,
+};
+use termion::raw::{
+    IntoRawMode,
+    RawTerminal,
+};
 use termion::screen::AlternateScreen;
 
 type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
@@ -58,12 +66,20 @@ impl<'a> Pager<'a> {
             }
         });
 
+        let height = size.1 as usize;
+
+        let scroll = if sized_lines.len() <= height {
+            sized_lines.len()
+        } else {
+            height
+        };
+
         Pager {
             lines,
-            height: size.1,
-            current_line: 0,
-            scroll: size.1 as usize,
+            scroll,
             screen,
+            current_line: 0,
+            height: size.1,
         }
     }
 
@@ -86,10 +102,24 @@ impl<'a> Pager<'a> {
         self.scroll as u16
     }
 
-    pub fn write(&mut self) {
+    fn write(&mut self) {
+        write!(
+            self.screen.borrow_mut(),
+            "{}{}",
+            termion::cursor::Goto(1, self.scroll_as_u16()),
+            termion::clear::CurrentLine,
+        )
+        .unwrap();
+
         let height = self.height as usize;
 
-        self.lines[self.current_line..self.current_line + height]
+        let offset = if self.current_line + height > self.lines.len() {
+            self.lines.len()
+        } else {
+            self.current_line + height
+        };
+
+        self.lines[self.current_line..offset]
             .into_iter()
             .enumerate()
             .for_each(|(idx, line)| {
@@ -106,7 +136,7 @@ impl<'a> Pager<'a> {
         self.flush();
     }
 
-    pub fn scroll_down(&mut self) {
+    fn scroll_down(&mut self) {
         self.scroll = if self.scroll == self.height as usize {
             self.height as usize
         } else {
@@ -115,25 +145,20 @@ impl<'a> Pager<'a> {
 
         let height = self.height as usize;
 
-        if self.current_line == self.lines.len() - height {
-            self.current_line = self.lines.len() - height;
+        self.current_line = if self.lines.len() < height {
+            0
+        } else if self.current_line == self.lines.len() - height {
+            self.lines.len() - height
         } else {
-            self.current_line = self.current_line + 1;
+            self.current_line + 1
         };
 
         print!("{}", termion::scroll::Up(self.scroll_as_u16()));
-        write!(
-            self.screen.borrow_mut(),
-            "{}{}",
-            termion::cursor::Goto(1, self.scroll_as_u16()),
-            termion::clear::CurrentLine,
-        )
-        .unwrap();
 
         self.write();
     }
 
-    pub fn scroll_up(&mut self) {
+    fn scroll_up(&mut self) {
         self.scroll = if self.scroll == 1 { 1 } else { self.scroll - 1 };
 
         self.current_line = if self.current_line == 0 {
@@ -143,14 +168,6 @@ impl<'a> Pager<'a> {
         };
 
         print!("{}", termion::scroll::Up(self.scroll_as_u16()));
-
-        write!(
-            self.screen.borrow_mut(),
-            "{}{}",
-            termion::cursor::Goto(1, self.scroll_as_u16()),
-            termion::clear::CurrentLine,
-        )
-        .unwrap();
 
         self.write();
     }
