@@ -36,7 +36,7 @@ use moins::Moins;
 
 fn main() {
     let mut content = String::from("👋 🌎!");
-    Pager::run(&mut content, None);
+    Moins::run(&mut content, None);
 }
 ```
 

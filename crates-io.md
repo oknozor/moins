@@ -30,11 +30,11 @@ Here is the simplest pager you can run :
 ```rust
 extern crate moins;
 
-use moins::Pager;
+use moins::Moins;
 
 fn main() {
     let mut content = String::from("👋 🌎!");
-    Pager::run(&mut content, None);
+    Moins::run(&mut content, None);
 }
 ```
 
