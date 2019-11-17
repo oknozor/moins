@@ -13,11 +13,11 @@ Qui bombillent autour des puanteurs cruelles"
         .to_owned();
 
     let mut colors = HashMap::new();
-    colors.insert("A".into(), Color::Black);
-    colors.insert("E".into(), Color::White);
-    colors.insert("I".into(), Color::Red);
-    colors.insert("U".into(), Color::Green);
-    colors.insert("O".into(), Color::Blue);
+    colors.insert("A", Color::Black);
+    colors.insert("E", Color::White);
+    colors.insert("I", Color::Red);
+    colors.insert("U", Color::Green);
+    colors.insert("O", Color::Blue);
 
     let options = PagerOptions {
         colors,

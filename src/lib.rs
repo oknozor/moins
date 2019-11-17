@@ -15,13 +15,13 @@ pub struct Moins<'a> {
     current_line: usize,
     scroll: usize,
     screen: Terminal,
-    options: Option<PagerOptions>,
+    options: Option<PagerOptions<'a>>,
 }
 
 /// options for `Moins` see the examples
-pub struct PagerOptions {
+pub struct PagerOptions<'a> {
     /// add color to the matching term
-    pub colors: HashMap<String, Color>,
+    pub colors: HashMap<&'a str, Color>,
     pub search: bool,
     pub line_number: bool,
 }
@@ -51,7 +51,7 @@ impl<'a> Moins<'a> {
         }
     }
 
-    fn new(content: &'a mut String, screen: Terminal, options: Option<PagerOptions>) -> Self {
+    fn new(content: &'a mut String, screen: Terminal, options: Option<PagerOptions<'a>>) -> Self {
         let size = termion::terminal_size().unwrap();
         let width = size.0 as usize;
         let mut lines = vec![];
@@ -92,7 +92,7 @@ impl<'a> Moins<'a> {
                 let mut find_idx = 0;
 
                 while let Some(term_idx) =
-                    colored_line[find_idx..colored_line.len()].rfind(term.as_str())
+                    colored_line[find_idx..colored_line.len()].rfind(term)
                 {
                     let color = color.get();
                     colored_line.insert_str(term_idx, color);

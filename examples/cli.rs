@@ -34,11 +34,11 @@ fn main() -> Result<()> {
     file.read_to_string(&mut content)?;
 
     let mut colors = HashMap::new();
-    colors.insert("[[package]]".into(), Color::Blue);
-    colors.insert("dependencies".into(), Color::Magenta);
-    colors.insert("version".into(), Color::LightRed);
-    colors.insert("name".into(), Color::Cyan);
-    colors.insert("metadata".into(), Color::Green);
+    colors.insert("[[package]]", Color::Blue);
+    colors.insert("dependencies", Color::Magenta);
+    colors.insert("version", Color::LightRed);
+    colors.insert("name", Color::Cyan);
+    colors.insert("metadata", Color::Green);
 
     let options = PagerOptions {
         colors,

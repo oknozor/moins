@@ -41,26 +41,26 @@ fn main() {
 If you want to add some colors to the pager you can add pagers options :
 
 ```rust
-let mut content =
-"A noir, E blanc, I rouge, U vert, O bleu, voyelles,
+let mut content = "A noir, E blanc, I rouge, U vert, O bleu, voyelles,
 Je dirai quelque jour vos naissances latentes.
 A, noir corset velu des mouches éclatantes
-Qui bombillent autour des puanteurs cruelles".to_owned();
+Qui bombillent autour des puanteurs cruelles"
+.to_owned();
 
-    let mut colors = HashMap::new();
-    colors.insert("A".into(), Color::Black);
-    colors.insert("E".into(), Color::White);
-    colors.insert("I".into(), Color::Red);
-    colors.insert("U".into(), Color::Green);
-    colors.insert("O".into(), Color::Blue);
+let mut colors = HashMap::new();
+colors.insert("A", Color::Black);
+colors.insert("E", Color::White);
+colors.insert("I", Color::Red);
+colors.insert("U", Color::Green);
+colors.insert("O", Color::Blue);
 
-    let options = PagerOptions {
-        colors,
-        search: false,
-        line_number: false,
-    };
+let options = PagerOptions {
+    colors,
+    search: false,
+    line_number: false,
+};
 
-    Pager::run(&mut content, Some(options));
+Moins::run(&mut content, Some(options));
 ```
 
 you can run the examples with the command `cargo run --example my_example`
