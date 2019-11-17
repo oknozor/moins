@@ -8,7 +8,12 @@ use std::io;
 use std::io::prelude::*;
 
 use moins::Pager;
+use moins::PagerOptions;
+use moins::Color;
+use std::collections::HashMap;
 
+// open your cargo lock with the following command :
+// `cargo run --example cli Cargo.lock` and enjoy the colors !
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
 
@@ -28,7 +33,20 @@ fn main() -> Result<()> {
 
     file.read_to_string(&mut content)?;
 
-    Pager::run(&mut content, None);
+    let mut colors = HashMap::new();
+    colors.insert("[[package]]".into(), Color::Blue);
+    colors.insert("dependencies".into(), Color::Magenta);
+    colors.insert("version".into(), Color::LightRed);
+    colors.insert("name".into(), Color::Cyan);
+    colors.insert("metadata".into(), Color::Green);
+
+    let options = PagerOptions {
+        colors,
+        search: false,
+        line_number: false,
+    };
+
+    Pager::run(&mut content, Some(options));
 
     Ok(())
 }
