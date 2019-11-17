@@ -21,9 +21,9 @@ type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
 pub struct Pager<'a> {
     lines: Vec<&'a str>,
     height: u16,
-    pub current_line: usize,
-    pub scroll: usize,
-    pub screen: Terminal,
+    current_line: usize,
+    scroll: usize,
+    screen: Terminal,
 }
 
 impl<'a> Pager<'a> {
