@@ -53,23 +53,21 @@ impl<'a> Pager<'a> {
     fn new(content: &'a String, screen: Terminal) -> Self {
         let size = termion::terminal_size().unwrap();
         let width = size.0 as usize;
-        let lines: Vec<&str> = content.split("\n").collect();
+        let mut lines = vec![];
 
-        let mut sized_lines = vec![];
-
-        lines.iter().for_each(|line| {
+        content.lines().for_each(|line| {
             if line.len() > width {
-                sized_lines.push(&line[0..width]);
-                sized_lines.push(&line[width..line.len()]);
+                lines.push(&line[0..width]);
+                lines.push(&line[width..line.len()]);
             } else {
-                sized_lines.push(line);
+                lines.push(line);
             }
         });
 
         let height = size.1 as usize;
 
-        let scroll = if sized_lines.len() <= height {
-            sized_lines.len()
+        let scroll = if lines.len() <= height {
+            lines.len()
         } else {
             height
         };
