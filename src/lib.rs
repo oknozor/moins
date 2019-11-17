@@ -9,7 +9,7 @@ use termion::screen::AlternateScreen;
 
 type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
 
-pub struct Pager<'a> {
+pub struct Moins<'a> {
     lines: Vec<&'a str>,
     height: u16,
     current_line: usize,
@@ -18,6 +18,7 @@ pub struct Pager<'a> {
     options: Option<PagerOptions>,
 }
 
+/// options for `Moins` see the examples
 pub struct PagerOptions {
     /// add color to the matching term
     pub colors: HashMap<String, Color>,
@@ -25,13 +26,14 @@ pub struct PagerOptions {
     pub line_number: bool,
 }
 
-impl<'a> Pager<'a> {
+impl<'a> Moins<'a> {
+    /// run moins pager
     pub fn run(content: &'a mut String, options: Option<PagerOptions>) {
         let stdout = stdout().into_raw_mode().unwrap();
         let screen = MouseTerminal::from(AlternateScreen::from(stdout));
         let screen = RefCell::new(screen);
 
-        let mut pager = Pager::new(content, screen, options);
+        let mut pager = Moins::new(content, screen, options);
 
         let stdin = stdin();
 
@@ -71,7 +73,7 @@ impl<'a> Pager<'a> {
             height
         };
 
-        Pager {
+        Moins {
             lines,
             scroll,
             screen,

@@ -8,7 +8,7 @@ use std::io;
 use std::io::prelude::*;
 
 use moins::Color;
-use moins::Pager;
+use moins::Moins;
 use moins::PagerOptions;
 use std::collections::HashMap;
 
@@ -46,7 +46,7 @@ fn main() -> Result<()> {
         line_number: false,
     };
 
-    Pager::run(&mut content, Some(options));
+    Moins::run(&mut content, Some(options));
 
     Ok(())
 }

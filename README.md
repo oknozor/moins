@@ -32,7 +32,7 @@ Here is the simplest pager you can run :
 ```rust
 extern crate moins;
 
-use moins::Pager;
+use moins::Moins;
 
 fn main() {
     let mut content = String::from("👋 🌎!");
@@ -62,7 +62,7 @@ Qui bombillent autour des puanteurs cruelles".to_owned();
         line_number: false,
     };
 
-    Pager::run(&mut content, Some(options));
+    Moins::run(&mut content, Some(options));
 ```
 
 you can run the examples with the command `cargo run --example my_example`

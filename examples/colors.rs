@@ -1,7 +1,7 @@
 extern crate moins;
 
 use moins::Color;
-use moins::Pager;
+use moins::Moins;
 use moins::PagerOptions;
 use std::collections::HashMap;
 
@@ -25,5 +25,5 @@ Qui bombillent autour des puanteurs cruelles"
         line_number: false,
     };
 
-    Pager::run(&mut content, Some(options));
+    Moins::run(&mut content, Some(options));
 }
