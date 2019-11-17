@@ -14,8 +14,7 @@ matrix:
 
 before_script:
 - rustup component add rustfmt
-- cargo +nightly install --force rustfmt-nightly
 
 script:
-  - cargo +nightly fmt --all -- --check
+  - cargo fmt --all -- --check
   - cargo build --verbose --all

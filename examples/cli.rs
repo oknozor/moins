@@ -7,9 +7,9 @@ use std::fs::File;
 use std::io;
 use std::io::prelude::*;
 
+use moins::Color;
 use moins::Pager;
 use moins::PagerOptions;
-use moins::Color;
 use std::collections::HashMap;
 
 // open your cargo lock with the following command :

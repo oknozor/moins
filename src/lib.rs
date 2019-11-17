@@ -1,20 +1,10 @@
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::io::Write;
-use std::io::{
-    stdin,
-    stdout,
-    Stdout,
-};
+use std::io::{stdin, stdout, Stdout};
 use termion::event::Key;
-use termion::input::{
-    MouseTerminal,
-    TermRead,
-};
-use termion::raw::{
-    IntoRawMode,
-    RawTerminal,
-};
+use termion::input::{MouseTerminal, TermRead};
+use termion::raw::{IntoRawMode, RawTerminal};
 use termion::screen::AlternateScreen;
 
 type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
