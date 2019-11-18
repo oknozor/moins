@@ -91,9 +91,7 @@ impl<'a> Moins<'a> {
             options.colors.iter().for_each(|(term, color)| {
                 let mut find_idx = 0;
 
-                while let Some(term_idx) =
-                    colored_line[find_idx..colored_line.len()].rfind(term)
-                {
+                while let Some(term_idx) = colored_line[find_idx..colored_line.len()].rfind(term) {
                     let color = color.get();
                     colored_line.insert_str(term_idx, color);
                     find_idx = term_idx + color.len() + term.len();
