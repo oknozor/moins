@@ -46,6 +46,18 @@ impl<'a> Moins<'a> {
                 Key::Char('q') => break,
                 Key::Down | Key::Char('j') => pager.scroll_down(),
                 Key::Up | Key::Char('k') => pager.scroll_up(),
+                Key::Char('/') => {
+                    write!(
+                        pager.screen.borrow_mut(),
+                        "{}{}/{}",
+                        termion::cursor::Goto(1, pager.height),
+                        termion::clear::CurrentLine,
+                        termion::cursor::Goto(2, pager.height)
+                    )
+                    .unwrap();
+                    pager.flush();
+                    pager.search();
+                }
                 _ => (),
             }
         }
@@ -192,6 +204,62 @@ impl<'a> Moins<'a> {
         print!("{}", termion::scroll::Up(self.scroll_as_u16()));
 
         self.write();
+    }
+
+    fn search(&mut self) {
+        let stdin = stdin();
+        let mut search_term = String::new();
+        for c in stdin.keys() {
+            // Input
+            match c.unwrap() {
+                Key::Char('\n') => break,
+                Key::Char(c) => {
+                    search_term.push(c);
+                    write!(self.screen.borrow_mut(), "{}", c).unwrap()
+                }
+                Key::Esc => return,
+                _ => (),
+            }
+
+            self.flush();
+        }
+
+        let matches: Vec<(usize, Vec<usize>)> = self
+            .lines
+            .iter()
+            .enumerate()
+            .map(|(idx, line)| {
+                let on_line_indices: Vec<usize> = line
+                    .match_indices(&search_term)
+                    .into_iter()
+                    .map(|(term_idx, _)| term_idx)
+                    .collect();
+
+                if on_line_indices.is_empty() {
+                    None
+                } else {
+                    Some((idx, on_line_indices))
+                }
+            })
+            .filter(|opt| opt.is_some())
+            .map(|matches| matches.unwrap())
+            .collect();
+
+        if !matches.is_empty() {
+            let hl_match = matches.get(0).unwrap();
+            write!(
+                self.screen.borrow_mut(),
+                "{}{}{}{}{}",
+                termion::cursor::Goto((hl_match.1[0] + 1) as u16, (hl_match.0 + 1) as u16),
+                termion::color::Fg(termion::color::Red),
+                search_term,
+                termion::color::Fg(termion::color::Reset),
+                termion::cursor::Hide
+            )
+            .unwrap();
+
+            self.flush();
+        }
     }
 }
 
