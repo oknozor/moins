@@ -2,10 +2,15 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::io::Write;
 use std::io::{stdin, stdout, Stdout};
+use termion::cursor::Goto;
 use termion::event::Key;
 use termion::input::{MouseTerminal, TermRead};
 use termion::raw::{IntoRawMode, RawTerminal};
 use termion::screen::AlternateScreen;
+
+mod search;
+
+use search::Search;
 
 type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
 
@@ -16,6 +21,7 @@ pub struct Moins<'a> {
     scroll: usize,
     screen: Terminal,
     options: Option<PagerOptions<'a>>,
+    search_result: Option<Search>,
 }
 
 /// options for `Moins` see the examples
@@ -46,13 +52,40 @@ impl<'a> Moins<'a> {
                 Key::Char('q') => break,
                 Key::Down | Key::Char('j') => pager.scroll_down(),
                 Key::Up | Key::Char('k') => pager.scroll_up(),
+                Key::Char('n') => {
+                    if let Some(result) = &mut pager.search_result {
+                        if let Some(next) = result.next() {
+                            pager.current_line = next.1 as usize;
+                            pager.scroll = 0;
+
+                            write!(
+                                pager.screen.borrow_mut(),
+                                "{}{}{}{}",
+                                next,
+                                termion::color::Fg(termion::color::Red),
+                                Goto(next.0 + result.term_len, next.1),
+                                termion::color::Fg(termion::color::Reset),
+                            ).unwrap();
+                            pager.flush();
+                        }
+                    }
+                    pager.write();
+                }
+                Key::Char('N') => {
+                    if let Some(result) = &mut pager.search_result {
+                        if let Some(prev) = result.prev() {
+                            print!("{}", prev);
+                            pager.flush();
+                        }
+                    }
+                }
                 Key::Char('/') => {
                     write!(
                         pager.screen.borrow_mut(),
                         "{}{}/{}",
-                        termion::cursor::Goto(1, pager.height),
+                        Goto(1, pager.height),
                         termion::clear::CurrentLine,
-                        termion::cursor::Goto(2, pager.height)
+                        Goto(2, pager.height)
                     )
                     .unwrap();
                     pager.flush();
@@ -92,6 +125,7 @@ impl<'a> Moins<'a> {
             current_line: 0,
             height: size.1,
             options,
+            search_result: None,
         }
     }
 
@@ -122,7 +156,7 @@ impl<'a> Moins<'a> {
             self.screen.borrow_mut(),
             "{}{}{}",
             termion::clear::All,
-            termion::cursor::Goto(1, 1),
+            Goto(1, 1),
             termion::cursor::Hide,
         )
         .unwrap();
@@ -140,7 +174,7 @@ impl<'a> Moins<'a> {
         write!(
             self.screen.borrow_mut(),
             "{}{}",
-            termion::cursor::Goto(1, self.scroll_as_u16()),
+            Goto(1, self.scroll_as_u16()),
             termion::clear::CurrentLine,
         )
         .unwrap();
@@ -160,7 +194,7 @@ impl<'a> Moins<'a> {
                 write!(
                     self.screen.borrow_mut(),
                     "{}{}{}{}",
-                    termion::cursor::Goto(1, (idx + 1) as u16),
+                    Goto(1, (idx + 1) as u16),
                     termion::clear::CurrentLine,
                     self.color(line.to_string()),
                     termion::cursor::Hide
@@ -220,46 +254,17 @@ impl<'a> Moins<'a> {
                 Key::Esc => return,
                 _ => (),
             }
-
             self.flush();
         }
 
-        let matches: Vec<(usize, Vec<usize>)> = self
-            .lines
-            .iter()
-            .enumerate()
-            .map(|(idx, line)| {
-                let on_line_indices: Vec<usize> = line
-                    .match_indices(&search_term)
-                    .into_iter()
-                    .map(|(term_idx, _)| term_idx)
-                    .collect();
+        let mut search_result = Search::new(&search_term, &self.lines);
 
-                if on_line_indices.is_empty() {
-                    None
-                } else {
-                    Some((idx, on_line_indices))
-                }
-            })
-            .filter(|opt| opt.is_some())
-            .map(|matches| matches.unwrap())
-            .collect();
+        if !search_result.is_empty() {
+            self.current_line = (search_result.first().1 - 1) as usize;
+            self.search_result = Some(search_result);
+        };
 
-        if !matches.is_empty() {
-            let hl_match = matches.get(0).unwrap();
-            write!(
-                self.screen.borrow_mut(),
-                "{}{}{}{}{}",
-                termion::cursor::Goto((hl_match.1[0] + 1) as u16, (hl_match.0 + 1) as u16),
-                termion::color::Fg(termion::color::Red),
-                search_term,
-                termion::color::Fg(termion::color::Reset),
-                termion::cursor::Hide
-            )
-            .unwrap();
-
-            self.flush();
-        }
+        self.write()
     }
 }
 
@@ -285,7 +290,6 @@ pub enum Color {
 
 impl Color {
     fn get(&self) -> &'static str {
-        // this might seem a litle bit absurd but we don't want our user to reimport termion colors
         match self {
             Color::Black => termion::color::Black::fg_str(&termion::color::Black {}),
             Color::LightBlack => termion::color::LightBlack::fg_str(&termion::color::LightBlack),
