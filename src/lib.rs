@@ -12,6 +12,7 @@ type Terminal = RefCell<MouseTerminal<AlternateScreen<RawTerminal<Stdout>>>>;
 pub struct Moins<'a> {
     lines: Vec<&'a str>,
     height: u16,
+    width: u16,
     current_line: usize,
     scroll: usize,
     screen: Terminal,
@@ -78,7 +79,8 @@ impl<'a> Moins<'a> {
             scroll,
             screen,
             current_line: 0,
-            height: size.1,
+            height: size.1 - 2,
+            width: size.0,
             options,
         }
     }
@@ -92,7 +94,7 @@ impl<'a> Moins<'a> {
                 let mut find_idx = 0;
 
                 while let Some(term_idx) =
-                    colored_line[find_idx..colored_line.len()].rfind(term)
+                colored_line[find_idx..colored_line.len()].rfind(term)
                 {
                     let color = color.get();
                     colored_line.insert_str(term_idx, color);
@@ -115,7 +117,7 @@ impl<'a> Moins<'a> {
             termion::cursor::Goto(1, 1),
             termion::cursor::Hide,
         )
-        .unwrap();
+            .unwrap();
     }
 
     fn flush(&mut self) {
@@ -133,7 +135,7 @@ impl<'a> Moins<'a> {
             termion::cursor::Goto(1, self.scroll_as_u16()),
             termion::clear::CurrentLine,
         )
-        .unwrap();
+            .unwrap();
 
         let height = self.height as usize;
 
@@ -155,8 +157,25 @@ impl<'a> Moins<'a> {
                     self.color(line.to_string()),
                     termion::cursor::Hide
                 )
-                .unwrap();
+                    .unwrap();
             });
+
+        let acc = (0..self.width)
+            .map(|_| "_")
+            .collect::<String>();
+
+        write!(
+            self.screen.borrow_mut(),
+            "{}{}{}{}{}",
+            termion::cursor::Goto(1, self.height as u16),
+            termion::clear::CurrentLine,
+            termion::style::Underline,
+            termion::cursor::Hide,
+            acc,
+        ).unwrap();
+
+        print!("{}", termion::style::Reset);
+
         self.flush();
     }
 
