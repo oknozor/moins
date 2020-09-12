@@ -44,7 +44,10 @@ impl<'a> Moins<'a> {
         for c in stdin.keys() {
             // Input
             match c.unwrap() {
-                Key::Char('q') => break,
+                Key::Char('q') => {
+                    write!(pager.screen.borrow_mut(), "{}", termion::cursor::Show).unwrap();
+                    break
+                },
                 Key::Down | Key::Char('j') => pager.scroll_down(),
                 Key::Up | Key::Char('k') => pager.scroll_up(),
                 _ => (),
