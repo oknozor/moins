@@ -96,9 +96,7 @@ impl<'a> Moins<'a> {
             options.colors.iter().for_each(|(term, color)| {
                 let mut find_idx = 0;
 
-                while let Some(term_idx) =
-                colored_line[find_idx..colored_line.len()].rfind(term)
-                {
+                while let Some(term_idx) = colored_line[find_idx..colored_line.len()].rfind(term) {
                     let color = color.get();
                     colored_line.insert_str(term_idx, color);
                     find_idx = term_idx + color.len() + term.len();
@@ -120,7 +118,7 @@ impl<'a> Moins<'a> {
             termion::cursor::Goto(1, 1),
             termion::cursor::Hide,
         )
-            .unwrap();
+        .unwrap();
     }
 
     fn flush(&mut self) {
@@ -138,7 +136,7 @@ impl<'a> Moins<'a> {
             termion::cursor::Goto(1, self.scroll_as_u16()),
             termion::clear::CurrentLine,
         )
-            .unwrap();
+        .unwrap();
 
         let height = self.height as usize;
 
@@ -160,12 +158,10 @@ impl<'a> Moins<'a> {
                     self.color(line.to_string()),
                     termion::cursor::Hide
                 )
-                    .unwrap();
+                .unwrap();
             });
 
-        let acc = (0..self.width)
-            .map(|_| "_")
-            .collect::<String>();
+        let acc = (0..self.width).map(|_| "_").collect::<String>();
 
         write!(
             self.screen.borrow_mut(),
@@ -175,7 +171,8 @@ impl<'a> Moins<'a> {
             termion::style::Underline,
             termion::cursor::Hide,
             acc,
-        ).unwrap();
+        )
+        .unwrap();
 
         write!(
             self.screen.borrow_mut(),
@@ -185,8 +182,8 @@ impl<'a> Moins<'a> {
             termion::style::Reset,
             termion::cursor::Hide,
             "Ctrl+j, k, arrow_up ,arrow_down to move, q to quit",
-        ).unwrap();
-
+        )
+        .unwrap();
 
         print!("{}", termion::style::Reset);
 
