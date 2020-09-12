@@ -1,6 +1,6 @@
 [package]
 name = "moins"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Paul Delafosse <paul.delafosse@protonmail.com>"]
 edition = "2018"
 description = "A Keep It Simple Stupid pager crate"
@@ -13,4 +13,4 @@ exclude = [
 ]
 
 [dependencies]
-termion = "1.5.3"
+termion = "1.5.5"
