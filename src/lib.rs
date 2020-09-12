@@ -46,8 +46,8 @@ impl<'a> Moins<'a> {
             match c.unwrap() {
                 Key::Char('q') => {
                     write!(pager.screen.borrow_mut(), "{}", termion::cursor::Show).unwrap();
-                    break
-                },
+                    break;
+                }
                 Key::Down | Key::Char('j') => pager.scroll_down(),
                 Key::Up | Key::Char('k') => pager.scroll_up(),
                 _ => (),
@@ -170,12 +170,23 @@ impl<'a> Moins<'a> {
         write!(
             self.screen.borrow_mut(),
             "{}{}{}{}{}",
-            termion::cursor::Goto(1, self.height as u16),
+            termion::cursor::Goto(1, self.height),
             termion::clear::CurrentLine,
             termion::style::Underline,
             termion::cursor::Hide,
             acc,
         ).unwrap();
+
+        write!(
+            self.screen.borrow_mut(),
+            "{}{}{}{}{}",
+            termion::cursor::Goto(1, self.height + 2),
+            termion::clear::CurrentLine,
+            termion::style::Reset,
+            termion::cursor::Hide,
+            "Ctrl+j, k, arrow_up ,arrow_down to move, q to quit",
+        ).unwrap();
+
 
         print!("{}", termion::style::Reset);
 
